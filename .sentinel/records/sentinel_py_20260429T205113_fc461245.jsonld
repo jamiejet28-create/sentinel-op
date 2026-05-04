@@ -1,0 +1,34 @@
+{
+  "@context": {
+    "@vocab": "https://schema.org/",
+    "prov": "http://www.w3.org/ns/prov#",
+    "sentinel": "https://sentinel-op.dev/vocab#"
+  },
+  "@type": "sentinel:ProvenanceRecord",
+  "@id": "urn:sentinel:fc461245-7ee3-4ba9-b67c-65e95c2ad86e",
+  "sentinel:recordId": "fc461245-7ee3-4ba9-b67c-65e95c2ad86e",
+  "sentinel:schemaVersion": "2.0.0",
+  "prov:generatedAtTime": "2026-04-29T20:51:13.451699+00:00",
+  "prov:wasAttributedTo": {
+    "@type": "prov:Person",
+    "prov:label": "Human Developer (author of prompt)"
+  },
+  "sentinel:humanIntent": {
+    "@type": "sentinel:Prompt",
+    "sentinel:promptText": "Initial build of Sentinel-OP: A cryptographic proof-of-contribution tool for AI developers.",
+    "sentinel:promptTimestamp": "2026-04-29T20:51:13.451699+00:00"
+  },
+  "sentinel:artifactRecord": {
+    "@type": "sentinel:CodeArtifact",
+    "sentinel:filePath": "sentinel.py",
+    "sentinel:hashAlgorithm": "SHA-256",
+    "sentinel:fileHash": "649251f0d14a40b41afe1d8fb2107ae9e24d8d68562363275d516fbeb011c490",
+    "sentinel:recordedAt": "2026-04-29T20:51:13.451699+00:00"
+  },
+  "sentinel:digitalSignature": {
+    "@type": "sentinel:SignaturePlaceholder",
+    "sentinel:status": "unsigned",
+    "sentinel:note": "Replace this placeholder with a cryptographic signature (e.g., GPG or Ed25519) over the canonical JSON-LD to complete the Proof of Contribution chain.",
+    "sentinel:signatureValue": null
+  }
+}
