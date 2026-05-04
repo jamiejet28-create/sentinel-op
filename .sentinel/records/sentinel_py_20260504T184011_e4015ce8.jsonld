@@ -1,0 +1,46 @@
+{
+  "@context": {
+    "@vocab": "https://schema.org/",
+    "prov": "http://www.w3.org/ns/prov#",
+    "sentinel": "https://sentinel-op.dev/vocab#"
+  },
+  "@type": "sentinel:ProvenanceRecord",
+  "@id": "urn:sentinel:e4015ce8-ea54-465f-8048-2abcad52c97a",
+  "sentinel:recordId": "e4015ce8-ea54-465f-8048-2abcad52c97a",
+  "sentinel:schemaVersion": "2.0.0",
+  "prov:generatedAtTime": "2026-05-04T18:40:11.804567+00:00",
+  "prov:wasAttributedTo": {
+    "@type": "prov:Person",
+    "prov:label": "Human Developer (author of prompt)"
+  },
+  "sentinel:humanIntent": {
+    "@type": "sentinel:Prompt",
+    "sentinel:promptText": "Official GitHub launch of Sentinel-OP. Establish human-in-the-loop provenance for the AI community.",
+    "sentinel:promptTimestamp": "2026-05-04T18:40:11.804567+00:00"
+  },
+  "sentinel:artifactRecord": {
+    "@type": "sentinel:CodeArtifact",
+    "sentinel:filePath": "sentinel.py",
+    "sentinel:hashAlgorithm": "SHA-256",
+    "sentinel:fileHash": "2592e2c58c7b2244a4e23fe4c04ea80c6db67be87f12169b73e8d16535969a66",
+    "sentinel:recordedAt": "2026-05-04T18:40:11.804567+00:00"
+  },
+  "sentinel:digitalSignature": {
+    "@type": "sentinel:GPGSignature",
+    "sentinel:status": "signed",
+    "sentinel:signerIdentity": "Sentinel Test <sentinel-test@example.com>",
+    "sentinel:keyId": "10",
+    "sentinel:signedAt": "2026-05-04T18:40:12.159905+00:00",
+    "sentinel:algorithm": "GPG detached ASCII-armored signature",
+    "sentinel:signatureValue": "-----BEGIN PGP SIGNATURE-----\n\niQEzBAABCgAdFiEEsgqMjTq//U5cbrlNh0oPK0CPOVcFAmn46AwACgkQh0oPK0CP\nOVceTAf/dD5lGTF5YLM9DbfOg2UFv8eVgQCzrMOdG/3zHfHVQ4hnOHjUHuWmAyzf\nZydNkdde2UQq1vZ5XmygFAfQYSWYhCRXmmvoxAbvI7bM8KJiSIBfL/nhIWhxIYqf\nK4KYtsYyBtYpl7NRFy8/6Rr4M4leAOAYRMiU85dHVomB6faBFTTnuiG7fRFO5L55\nWCsJ8BcHzu50w7iCpDQy+SBatZP0ZpD/Tww8siaEIEY4pQtcre+G9sqXmScv9hjw\nv/HEsSMQ7RdSiJ4u15FKvGsJp/Ibc2ortBLqA0s3EpeIJzYoEAF8WeUOkxCkwXar\nhuJ6CglGfgOUynwv0Oev+DkUHFEwMQ==\n=sEmr\n-----END PGP SIGNATURE-----\n"
+  },
+  "sentinel:trustedTimestamp": {
+    "@type": "sentinel:RFC3161Timestamp",
+    "sentinel:tsaUrl": "https://freetsa.org/tsr",
+    "sentinel:tsrToken": "MIIDqjADAgEAMIIDoQYJKoZIhvcNAQcCoIIDkjCCA44CAQMxDzANBglghkgBZQMEAgMFADCCAYYGCyqGSIb3DQEJEAEEoIIBdQSCAXEwggFtAgEBBgQqAwQBMDEwDQYJYIZIAWUDBAIBBQAEIMouqcIhGst6BMWFjOuOv4XONC29f/eHT6vp77F/zyZZAgQEmNrqGA8yMDI2MDUwNDE4NDAxMloBAf+gggETpIIBDzCCAQsxETAPBgNVBAoMCEZyZWUgVFNBMQwwCgYDVQQLDANUU0ExdjB0BgNVBA0MbVRoaXMgY2VydGlmaWNhdGUgZGlnaXRhbGx5IHNpZ25zIGRvY3VtZW50cyBhbmQgdGltZSBzdGFtcCByZXF1ZXN0cyBtYWRlIHVzaW5nIHRoZSBmcmVldHNhLm9yZyBvbmxpbmUgc2VydmljZXMxGDAWBgNVBAMMD3d3dy5mcmVldHNhLm9yZzEkMCIGCSqGSIb3DQEJARYVYnVzaWxlemFzQG1haWxib3gub3JnMRIwEAYDVQQHDAlXdWVyemJ1cmcxCzAJBgNVBAYTAkRFMQ8wDQYDVQQIDAZCYXllcm4xggHsMIIB6AIBATCBozCBlTERMA8GA1UEChMIRnJlZSBUU0ExEDAOBgNVBAsTB1Jvb3QgQ0ExGDAWBgNVBAMTD3d3dy5mcmVldHNhLm9yZzEiMCAGCSqGSIb3DQEJARYTYnVzaWxlemFzQGdtYWlsLmNvbTESMBAGA1UEBxMJV3VlcnpidXJnMQ8wDQYDVQQIEwZCYXllcm4xCzAJBgNVBAYTAkRFAgkAwumGFg2o6c0wDQYJYIZIAWUDBAIDBQCggbgwGgYJKoZIhvcNAQkDMQ0GCyqGSIb3DQEJEAEEMBwGCSqGSIb3DQEJBTEPFw0yNjA1MDQxODQwMTJaMCsGCyqGSIb3DQEJEAIMMRwwGjAYMBYEFEgf1TxTTThBgMAoZRmgNvmIVEdmME8GCSqGSIb3DQEJBDFCBEBFgPVGJYdcP7HSRMIE3j87/zQdAV7jamXmV68wps3x6C9tLzVi4+poPTJlEJToi4snCBv62lLeyB6jFwkeyBKxMAoGCCqGSM49BAMEBGcwZQIxANBfFSJY+6KhE2PvpYf9ls7amJijbdn2NjT7uCIyhyBr0qXb77wXckcz96SqIVNTxQIwDpVddasNCVk3S7vlCty/7uXmqzRDGnFpihdBTG7Mbyo4pZXF3U9ksRJ8ze4l+gga",
+    "sentinel:tsaTime": "May  4 18:40:12 2026 GMT",
+    "sentinel:status": "fetched",
+    "sentinel:verifiedLocally": false,
+    "sentinel:tsrSizeBytes": 942
+  }
+}
