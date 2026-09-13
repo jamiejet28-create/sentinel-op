@@ -4,6 +4,21 @@
 
 ---
 
+## Quickstart (10 lines)
+
+```bash
+git clone https://github.com/jamiejet28-create/sentinel-op.git
+cd sentinel-op
+python3 sentinel.py init
+# after AI generates a file:
+python3 sentinel.py record --prompt "your prompt" --file path/to/file.py
+python3 sentinel.py list
+```
+
+Commit `.sentinel/` with your code. That is your proof trail.
+
+---
+
 ## What Is Sentinel-OP?
 
 Sentinel-OP is a lightweight CLI tool for AI developers to establish a **defensible, cryptographic record of human creative contribution** over AI-generated code or other artifacts.
@@ -51,7 +66,7 @@ By committing these records to version control (e.g., Git), you create a **times
 No Python dependencies beyond the standard library (Python 3.8+).
 
 ```bash
-git clone https://github.com/yourname/sentinel-op
+git clone https://github.com/jamiejet28-create/sentinel-op.git
 cd sentinel-op
 chmod +x sentinel.py
 # Optionally add to PATH
@@ -233,7 +248,6 @@ Total: 2 record(s)
 ```
 
 ---
-
 
 ### 7. Publish to IPFS (Decentralized Storage)
 
