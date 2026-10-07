@@ -39,11 +39,11 @@ Copyright rules vary by jurisdiction and change over time. Whether a person qual
 
 Human direction and creative contribution may be relevant in some copyright analyses, but there is no general “Human-in-the-Loop” rule that this tool can certify.
 
-### How Prompt + Output = Defensible IP
+### What a Prompt and File Hash Record
 
 Sentinel-OP records the following data and optional mechanisms:
 
-| Pillar | What It Captures | Legal Significance |
+| Record element | What It Captures | What it does not establish |
 |---|---|---|
 | **Prompt** | Text entered by the user | Records the text; does not prove it was sent to an AI |
 | **File hash** | SHA-256 hash of the selected file | Allows later comparison with the file's bytes |
@@ -252,7 +252,7 @@ Total: 2 record(s)
 
 ### 7. Publish to IPFS (Decentralized Storage)
 
-Make your provenance record **unsinkable** by publishing it to the [InterPlanetary File System (IPFS)](https://ipfs.tech/):
+Publish a manifest to the [InterPlanetary File System (IPFS)](https://ipfs.tech/). Treat it as public: the prompt and other manifest data may be retrievable by anyone with its CID.
 
 ```bash
 python sentinel.py publish \
@@ -290,7 +290,7 @@ Alternatively, upload your `.jsonld` manifest directly to a **pinning service** 
 
 ---
 
-## What IPFS Provides
+## IPFS Storage and Availability
 
 ### The Problem with Centralized Storage
 
@@ -309,17 +309,17 @@ When your provenance records live only on your local machine or even on GitHub, 
 3. **Global verifiability** — Anyone in the world can retrieve your manifest using just the CID. No account, no API key, no permission needed.
 4. **Complementary to TSA** — A TSA token may attest to a submitted hash's time; IPFS provides a content address for the bytes uploaded. Neither mechanism establishes authorship or ownership.
 
-### The Complete Proof Stack
+### Recorded Data and Optional Verification
 
-| Layer | Tool | What It Proves |
+| Layer | Tool | What It Records or Checks |
 |-------|------|----------------|
 | **Prompt** | `sentinel record --prompt` | The text entered in the record |
-| **Integrity** | SHA-256 file hash | The artifact has not been altered |
-| **Identity** | `sentinel sign` (GPG) | *You specifically* made this claim |
+| **Integrity** | SHA-256 file hash | Whether current file bytes match the recorded hash |
+| **Signature** | `sentinel sign` (GPG) | Whether the manifest payload verifies against a public key |
 | **Time** | `sentinel record --tsa` (RFC 3161) | A TSA's attestation time, if the token and trust chain verify |
 | **Content address** | `sentinel publish` (IPFS) | A CID for the exact uploaded bytes; availability depends on retention |
 
-## Why Trusted Timestamps Are the Gold Standard
+## Trusted Timestamps
 
 ### The Problem with Self-Asserted Timestamps
 

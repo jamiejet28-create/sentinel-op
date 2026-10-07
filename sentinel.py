@@ -850,11 +850,11 @@ def main():
     # publish
     publish_parser = subparsers.add_parser(
         "publish",
-        help="Publish a provenance manifest to IPFS for decentralized, unsinkable storage."
+        help="Publish a provenance manifest to IPFS and report its content identifier."
     )
     publish_parser.add_argument(
         "--manifest", required=True,
-        help="Path to the .jsonld manifest file to publish to IPFS."
+        help="Path to the .jsonld manifest file to publish and report its CID."
     )
     publish_parser.set_defaults(func=cmd_publish)
 
