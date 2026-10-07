@@ -21,13 +21,13 @@ Commit `.sentinel/` with your code. That is your proof trail.
 
 ## What Is Sentinel-OP?
 
-Sentinel-OP is a lightweight CLI tool for AI developers to establish a **defensible, cryptographic record of human creative contribution** over AI-generated code or other artifacts.
+Sentinel-OP is a lightweight CLI tool for recording provenance information about code or other artifacts, including a prompt, a file hash, and optional signatures or timestamp tokens.
 
 As AI-assisted development becomes the norm, legal systems are grappling with a central question:
 
 > *Who owns AI-generated code — and can that ownership be proven?*
 
-Sentinel-OP answers that question by capturing the **human intent** (your prompt) alongside the **AI output** (the file) in a tamper-evident JSON-LD provenance manifest — optionally **signed** with your GPG key and **timestamped** by a third-party Trusted Timestamp Authority (TSA).
+Sentinel-OP stores a prompt supplied by the user alongside a hash of a file in a JSON-LD manifest. The record can optionally be signed with GPG and submitted to a third-party Timestamp Authority (TSA). These mechanisms protect the recorded data against undetected changes; they do not independently prove that an AI system received the prompt, who created the file, or who owns its copyright.
 
 ---
 
@@ -35,29 +35,30 @@ Sentinel-OP answers that question by capturing the **human intent** (your prompt
 
 ### Why Human Contribution Matters
 
-Current copyright frameworks — including U.S. copyright law and the EU AI Act — require a **human author** to claim IP ownership. A purely machine-generated work, with no human creative direction, may be ineligible for copyright protection.
+Copyright rules vary by jurisdiction and change over time. Whether a person qualifies as an author depends on the facts and applicable law; a provenance record cannot answer that question or establish ownership.
 
-The decisive factor courts and IP offices are beginning to examine is not *who typed the code*, but **who exercised creative control and directed the output**. This is the "Human-in-the-Loop" doctrine.
+Human direction and creative contribution may be relevant in some copyright analyses, but there is no general “Human-in-the-Loop” rule that this tool can certify.
 
-### How Prompt + Output = Defensible IP
+### What a Prompt and File Hash Record
 
-Sentinel-OP operationalizes this theory with five pillars:
+Sentinel-OP records the following data and optional mechanisms:
 
-| Pillar | What It Captures | Legal Significance |
+| Record element | What It Captures | What it does not establish |
 |---|---|---|
-| **Intent** | The developer's prompt — the creative question posed | Demonstrates human authorship direction |
-| **Output** | SHA-256 hash of the produced file | Immutably links the intent to a specific artifact |
-| **Timestamp** | UTC ISO-8601 at moment of recording | Establishes priority and chain of custody |
-| **Identity** | GPG signature over the manifest | Cryptographically binds *your identity* to *your claim* |
-| **Trusted Time** | RFC 3161 TSA token from a third-party authority | Court-admissible proof of *when* the record was created |
+| **Prompt** | Text entered by the user | Records the text; does not prove it was sent to an AI |
+| **File hash** | SHA-256 hash of the selected file | Allows later comparison with the file's bytes |
+| **Local time** | System clock time when recording | Informational only; the local clock may be inaccurate or changed |
+| **GPG signature** | Optional signature of the manifest payload | Can verify a signature against a public key; does not establish legal identity by itself |
+| **TSA token** | Optional RFC 3161 timestamp response | Can support verification that a submitted hash existed by a TSA time, subject to validating the token and trust chain |
 
-By committing these records to version control (e.g., Git), you create a **timestamped, auditable paper trail** that:
+Keeping records in version control can create an **auditable history** that:
 
-1. **Proves you were the originating human agent** — you wrote the prompt, you reviewed the output, you accepted or rejected it.
-2. **Establishes prior art** against others who may later claim the same work.
-3. **Survives challenge** — if your ownership is disputed, the hash proves the exact file you claimed has not been altered since you recorded it.
-4. **Proves identity** — when signed with your GPG key, the manifest is a non-repudiable assertion that *you specifically* made this contribution.
-5. **Proves timing** — an RFC 3161 trusted timestamp is issued by an independent third party, providing court-admissible evidence of *when* you recorded your claim.
+1. Shows what prompt text and file hash a record contained.
+2. Allows later comparison to see whether a file matches its recorded hash.
+3. A valid signature can show that the signed payload was signed by the key holder; key ownership and identity still need to be established separately.
+4. A successfully verified TSA token can support a claim that the submitted payload existed no later than the time attested by that TSA.
+
+These records do not by themselves prove authorship, ownership, originality, legal priority, or admissibility in a proceeding. Their evidentiary value depends on the facts, verification, applicable law, and the decision-maker.
 
 ---
 
@@ -94,7 +95,7 @@ python sentinel.py init
 
 Creates a `.sentinel/` directory with a `records/` subdirectory and a `meta.json` project manifest.
 
-**Commit `.sentinel/` to your repository.** The records are your proof.
+Records are stored in plain text. Review them before committing or sharing: prompts may contain confidential code, customer information, credentials, or other sensitive details.
 
 ---
 
@@ -251,7 +252,7 @@ Total: 2 record(s)
 
 ### 7. Publish to IPFS (Decentralized Storage)
 
-Make your provenance record **unsinkable** by publishing it to the [InterPlanetary File System (IPFS)](https://ipfs.tech/):
+Publish a manifest to the [InterPlanetary File System (IPFS)](https://ipfs.tech/). Treat it as public: the prompt and other manifest data may be retrievable by anyone with its CID.
 
 ```bash
 python sentinel.py publish \
@@ -262,14 +263,13 @@ python sentinel.py publish \
 ```
 Publishing to IPFS: .sentinel/records/...jsonld
 
-✓ PUBLISHED to IPFS — Your provenance record is now on the decentralized web.
+✓ PUBLISHED to IPFS.
   Manifest  : .sentinel/records/...jsonld
   CID       : QmX4z8f...abc123
   Gateway   : https://ipfs.io/ipfs/QmX4z8f...abc123
   Published : 2026-04-29T16:45:00+00:00
 
-This record is now 'unsinkable' — no central authority can delete or alter it.
-Pin it with a pinning service (Pinata, Web3.Storage) for long-term persistence.
+The manifest is left unchanged after publishing so that the CID refers to the exact file uploaded and existing signatures remain intact. Save the CID separately. IPFS content may become unavailable unless retained or pinned by nodes; publication does not guarantee permanence or broad availability.
 ```
 
 #### IPFS Setup
@@ -290,7 +290,7 @@ Alternatively, upload your `.jsonld` manifest directly to a **pinning service** 
 
 ---
 
-## Why IPFS Makes Your Proof "Unsinkable"
+## IPFS Storage and Availability
 
 ### The Problem with Centralized Storage
 
@@ -305,41 +305,41 @@ When your provenance records live only on your local machine or even on GitHub, 
 [IPFS](https://ipfs.tech/) is a **content-addressed, peer-to-peer** storage network. When you publish a file to IPFS:
 
 1. **Content-addressed integrity** — The file's address (CID) is derived from a cryptographic hash of its contents. If even a single byte changes, the CID changes. This makes tampering mathematically impossible without generating a new address.
-2. **Decentralized persistence** — Once published and pinned by multiple nodes, no single entity can delete or censor your record. It exists across a distributed network.
+2. **Potential persistence** — Content may remain available while nodes retain or pin it, but availability is not guaranteed.
 3. **Global verifiability** — Anyone in the world can retrieve your manifest using just the CID. No account, no API key, no permission needed.
-4. **Complementary to TSA** — While a Trusted Timestamp proves *when* your record was created, IPFS proves that the record has been *publicly available and unaltered* since publication.
+4. **Complementary to TSA** — A TSA token may attest to a submitted hash's time; IPFS provides a content address for the bytes uploaded. Neither mechanism establishes authorship or ownership.
 
-### The Complete Proof Stack
+### Recorded Data and Optional Verification
 
-| Layer | Tool | What It Proves |
+| Layer | Tool | What It Records or Checks |
 |-------|------|----------------|
-| **Intent** | `sentinel record --prompt` | You directed the AI's output |
-| **Integrity** | SHA-256 file hash | The artifact has not been altered |
-| **Identity** | `sentinel sign` (GPG) | *You specifically* made this claim |
-| **Time** | `sentinel record --tsa` (RFC 3161) | *When* you made the claim (court-admissible) |
-| **Persistence** | `sentinel publish` (IPFS) | The claim is globally available and untamperable |
+| **Prompt** | `sentinel record --prompt` | The text entered in the record |
+| **Integrity** | SHA-256 file hash | Whether current file bytes match the recorded hash |
+| **Signature** | `sentinel sign` (GPG) | Whether the manifest payload verifies against a public key |
+| **Time** | `sentinel record --tsa` (RFC 3161) | A TSA's attestation time, if the token and trust chain verify |
+| **Content address** | `sentinel publish` (IPFS) | A CID for the exact uploaded bytes; availability depends on retention |
 
-## Why Trusted Timestamps Are the Gold Standard
+## Trusted Timestamps
 
 ### The Problem with Self-Asserted Timestamps
 
 When you create a file and record a timestamp, that timestamp is *self-asserted*. You set it. A skeptic, a court, or an opposing counsel could argue that you manipulated your system clock, backdated the record, or fabricated the timestamp after the fact. Even Git commit timestamps can be forged.
 
-### What RFC 3161 Provides
+### What RFC 3161 Can Provide
 
 [RFC 3161](https://datatracker.ietf.org/doc/html/rfc3161) defines a protocol where an independent, trusted third party — a **Timestamp Authority (TSA)** — cryptographically signs a hash of your data along with the current time from their own clock. This creates a **Timestamp Token (TSR)** that proves:
 
-1. **Your data existed at a specific moment** — the TSA certifies that the hash you submitted existed at the exact time the token was issued. You cannot backdate a TSR.
-2. **The timestamp is independently verifiable** — anyone with the TSA's public certificate can verify the token without contacting you or the TSA.
-3. **The timestamp is court-admissible** — RFC 3161 timestamps are recognized as evidence in legal proceedings in the U.S., EU, and most major jurisdictions. They meet the requirements of the EU eIDAS regulation and the U.S. ESIGN Act.
+1. A valid token can attest that a hash was submitted to a TSA by the time in the token.
+2. Verification requires validating the token and the TSA's certificate chain and trust policy.
+3. Legal effect and admissibility depend on the jurisdiction and circumstances; RFC 3161 alone does not guarantee either.
 
-### First-to-File Protection
+### Recordkeeping, Not First-to-File Protection
 
-In patent and IP disputes, **priority** often determines ownership. The party who can demonstrate the earliest verifiable creation date wins. A trusted timestamp provides this proof:
+An independently verified timestamp may be one piece of recordkeeping evidence. It does not establish patent rights, copyright ownership, or priority by itself:
 
-- **Prior art defense:** If someone files a patent on a technique you already documented with a TSA timestamp, you have cryptographic proof that your work predates their filing.
-- **Copyright priority:** When two parties claim authorship of similar AI-generated code, the party with the earliest TSR wins the priority dispute.
-- **Trade secret documentation:** TSA timestamps prove when proprietary knowledge was documented, establishing the timeline for trade secret protection.
+- **Patent matters:** Patentability, prior art, and rights depend on applicable patent law and specific facts.
+- **Copyright matters:** A timestamp does not determine authorship or which claimant prevails.
+- **Trade secrets:** A timestamp does not establish that information qualifies for trade-secret protection or that reasonable secrecy measures were taken.
 
 ### Public TSA Services
 
@@ -411,7 +411,7 @@ Each `.sentinel/records/*.jsonld` file uses [W3C PROV-O](https://www.w3.org/TR/p
 ## Recommended Workflow
 
 ```
-Write prompt → Generate code → sentinel record --tsa → sentinel sign → sentinel publish → git commit
+Write prompt → Generate code → sentinel record --tsa → sentinel sign → sentinel publish → save CID separately → git commit
                                                                                             ↑
                                                               .sentinel/records/ committed here
 ```
@@ -423,10 +423,12 @@ If you edit the AI output after signing, **record again** and **sign again** wit
 ## Limitations & Disclaimers
 
 - Sentinel-OP is a **technical tool**, not legal advice. Consult an IP attorney for your jurisdiction.
-- For strongest protection, push your `.sentinel/records/` to a **public, timestamped Git repository** (GitHub, GitLab) immediately after recording.
-- TSA token local verification requires the TSA's CA certificate chain. Without it, `openssl ts -verify` may report inconclusive — the token itself remains valid evidence.
+- Records contain prompt text in plain text. Do not record or publish secrets or information you are not willing to disclose. IPFS publication may make the manifest publicly retrievable, and availability depends on pinning or retention.
+- Git history and local timestamps can be changed; a public repository does not independently prove authorship or ownership.
+- TSA token verification requires the TSA's certificate chain and trust validation. An inconclusive local check does not establish that a token is valid.
 - GPG signature verification requires the signer's public key to be available in the verifier's GPG keyring.
 - The `--tsa` flag requires `openssl` to be installed on your system.
+- Signing and timestamping can support verification of a record but do not guarantee legal admissibility, copyright protection, or ownership.
 
 ---
 
