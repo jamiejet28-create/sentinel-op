@@ -799,37 +799,17 @@ class TestPublish:
         assert fake_cid in result.stdout
         assert "ipfs.io" in result.stdout
 
-    def test_publish_updates_manifest_with_ipfs_record(self):
-        """After publish, the manifest should contain sentinel:ipfsRecord."""
-        fake_cid = "QmUpdatedCID9876543210"
-        fake_ipfs = os.path.join(self.tmp, "ipfs")
-        with open(fake_ipfs, "w") as f:
-            f.write(f"#!/bin/bash\necho '{fake_cid}'\n")
-        os.chmod(fake_ipfs, 0o755)
-
-        env = os.environ.copy()
-        env["PATH"] = self.tmp + ":" + env.get("PATH", "")
-        subprocess.run(
-            [sys.executable, SENTINEL_PY, "publish", "--manifest", self.manifest_path],
-            cwd=self.tmp,
-            capture_output=True,
-            text=True,
-            env=env,
-        )
-
-        manifest = json.loads(Path(self.manifest_path).read_text())
-        ipfs_block = manifest.get("sentinel:ipfsRecord")
-        assert ipfs_block is not None
-        assert ipfs_block["sentinel:ipfsCid"] == fake_cid
-        assert ipfs_block["sentinel:status"] == "published"
-        assert f"https://ipfs.io/ipfs/{fake_cid}" == ipfs_block["sentinel:gatewayUrl"]
-        assert "sentinel:publishedAt" in ipfs_block
-
-    def test_publish_preserves_existing_manifest_fields(self):
-        """Publish should not alter existing fields like hash, prompt, or signature."""
-        original = json.loads(Path(self.manifest_path).read_text())
-        original_hash = original["sentinel:artifactRecord"]["sentinel:fileHash"]
-        original_prompt = original["sentinel:humanIntent"]["sentinel:promptText"]
+    def test_publish_does_not_modify_manifest(self):
+        """Publishing must not change the bytes whose CID and signature are recorded."""
+        manifest_path = Path(self.manifest_path)
+        manifest_path.write_text(json.dumps({
+            "sentinel:humanIntent": {"sentinel:promptText": "preserve this prompt"},
+            "sentinel:digitalSignature": {
+                "sentinel:status": "signed",
+                "sentinel:signatureValue": "test signature",
+            },
+        }, indent=2))
+        original = manifest_path.read_bytes()
 
         fake_ipfs = os.path.join(self.tmp, "ipfs")
         with open(fake_ipfs, "w") as f:
@@ -838,7 +818,7 @@ class TestPublish:
 
         env = os.environ.copy()
         env["PATH"] = self.tmp + ":" + env.get("PATH", "")
-        subprocess.run(
+        result = subprocess.run(
             [sys.executable, SENTINEL_PY, "publish", "--manifest", self.manifest_path],
             cwd=self.tmp,
             capture_output=True,
@@ -846,9 +826,9 @@ class TestPublish:
             env=env,
         )
 
-        updated = json.loads(Path(self.manifest_path).read_text())
-        assert updated["sentinel:artifactRecord"]["sentinel:fileHash"] == original_hash
-        assert updated["sentinel:humanIntent"]["sentinel:promptText"] == original_prompt
+        assert result.returncode == 0
+        assert "QmPreserveTest" in result.stdout
+        assert manifest_path.read_bytes() == original
 
     def test_publish_ipfs_failure_exits_nonzero(self):
         """If ipfs add fails, publish should exit with nonzero."""

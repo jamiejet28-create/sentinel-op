@@ -662,7 +662,7 @@ def cmd_verify(args):
                 print(f"  ✓ TSA TOKEN VERIFIED — Timestamp is authentic against payload.")
             else:
                 print(f"  ⚠ TSA local verification: {message}")
-                print(f"    (The TSR token is still valid evidence; full verification requires the TSA's CA certificate.)")
+                print(f"    (The token's authenticity could not be established locally; configure the TSA's CA certificate chain and verify again.)")
         elif not _openssl_binary():
             print(f"  ⚠ OpenSSL not available — cannot verify TSA token locally.")
     else:
@@ -670,7 +670,7 @@ def cmd_verify(args):
 
 
 def cmd_publish(args):
-    """Publish a manifest to IPFS for decentralized, unsinkable provenance."""
+    """Publish a manifest to IPFS and report its content identifier."""
     _require_ipfs()
 
     manifest_path = _normalize_path(args.manifest)
@@ -726,24 +726,13 @@ def cmd_publish(args):
     gateway_url = f"https://ipfs.io/ipfs/{cid}"
     published_at = datetime.now(timezone.utc).isoformat()
 
-    manifest["sentinel:ipfsRecord"] = {
-        "@type": "sentinel:IPFSPublication",
-        "sentinel:ipfsCid": cid,
-        "sentinel:gatewayUrl": gateway_url,
-        "sentinel:publishedAt": published_at,
-        "sentinel:status": "published",
-    }
-
-    with open(manifest_path, "w") as f:
-        json.dump(manifest, f, indent=2)
-
-    print(f"\n✓ PUBLISHED to IPFS — Your provenance record is now on the decentralized web.")
+    print(f"\n✓ PUBLISHED to IPFS.")
     print(f"  Manifest  : {manifest_path}")
     print(f"  CID       : {cid}")
     print(f"  Gateway   : {gateway_url}")
     print(f"  Published : {published_at}")
-    print(f"\nThis record is now \'unsinkable\' — no central authority can delete or alter it.")
-    print(f"Pin it with a pinning service (Pinata, Web3.Storage) for long-term persistence.")
+    print("\nThe manifest was not modified. Save the CID separately if you need to retain it.")
+    print("IPFS availability depends on nodes retaining or pinning the content.")
 
 
 def cmd_list(args):
